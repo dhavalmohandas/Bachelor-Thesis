@@ -1,0 +1,233 @@
+% Chapter 1
+
+\chapter{Parabolic and 2D Problem} % Main chapter title
+
+\label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\lhead{Chapter 2. \emph{Parabolic and 2D Problem}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+
+\section{Parabolic Problem}
+We consider the convection-diffusion-reaction equation with the following conditions
+\begin{align}
+ & u_{t}-\epsilon u_{xx} + bu_{x} + cu = f \text{ for } (x,t) \in \Omega=(0,1)\\
+ & u(x,0) = \phi(x)\\
+ & u(0,t) = \alpha(t), u(1,t) = \beta(t)
+\end{align}
+The coefficients on the grid points are approximated as follows:
+\begin{align*}
+ b(x,t) \approx b_{j}^{n}, \hspace{5mm} c(x,t) \approx c_{j}^{n}, \hspace{5mm}f(x,t) \approx f_{j}^{n} \text{ for } x \in [x_{j-1},x_{j+1}],\hspace{2mm} t \in [t^{n},t^{n+1}]
+\end{align*}
+Thus the equation is now,
+\begin{align*}
+ u_t -\epsilon u_{xx} + b_{j}^{n} + c_{j}^{n} = f_{j}^{n} \text{ for } x \in [x_{j-1},x_{j+1}],\hspace{2mm} t \in [t^{n},t^{n+1}]
+\end{align*}
+For $c_{j}^{n}>0$, we let $v(x,t) = u(x,t)-f_{j}^{n}/c_{j}^{n}$. Then $v(x,t)$ satisfies
+\begin{align*}
+ v_t-\epsilon v_{xx} + b_{j}^{n} + c_{j}^{n}v = 0 \text{ for } x \in [x_{j-1},x_{j+1}],\hspace{2mm} t \in [t^{n},t^{n+1}]
+\end{align*}
+Let
+\begin{align*}
+ H_{3} = \{ w(x,t) | = w(x,t) = \beta_{0}e^{-c_{j}^{n}t}, \beta_{1}e^{\lambda_{+}x},\beta_{2}e^{\lambda_{-}x} \text{ for } \beta_{i} \in R     \}
+\end{align*}
+with
+\begin{align*}
+ \lambda_{\pm} = \frac{b_{j}^{n}}{2\epsilon} \pm \sqrt{\frac{(b_{j}^{n})^2}{4 \epsilon^2}+\frac{c_{j}^{n}}{\epsilon}}
+\end{align*}
+We use the following scheme
+\begin{align*}
+ v_{j}^{n+1} = \alpha_{1}v_{j-1}^{n}+\alpha_{2}v_{j}^{n}+\alpha_{3}v_{j+1}^{n}
+\end{align*}
+Substituting the basis functions in the above scheme we obtain
+
+\begin{align}
+ \alpha_{1}+\alpha_{2}+\alpha_{3} &= e^{-c_{j}^{n}\tau}\\
+ \alpha_{1}e^{-\lambda_{+}h}+\alpha_{2}+\alpha_{3}e^{\lambda_{+}h} &= 1\\
+ \alpha_{1}e^{-\lambda_{-}h}+\alpha_{2}+\alpha_{3}e^{\lambda_{-}h} &= 1
+\end{align}
+
+On solving the above system we get
+
+\begin{align}
+\alpha_{1} &= \frac{e^{-\lambda_{+}h}(1-e^{-c_{j}^{n}}\tau)}{(1-e^{-\lambda_{+}h})(1-e^{\lambda_{-}h})}\\
+\alpha_{3} &= \frac{e^{\lambda_{-}h}(1-e^{-c_{j}^{n}}\tau)}{(1-e^{-\lambda_{+}h})(1-e^{\lambda_{-}h})}\\
+\alpha_{2} &= e^{-c_{j}^{n} \tau}-\alpha_{1}-\alpha_{3}
+\end{align}
+
+On substituting the expressions in the scheme we have the following expression
+
+\begin{align*}
+ u_{j}^{n+1} = \alpha_{1}u_{j-1}^{n}+\alpha_{2}u_{j}^{n}+\alpha_{3}u_{j+1}^{n} + (1-e^{-c_{n}^{j}\tau})\frac{f_{j}^{n}}{c_{j}^{n}}
+\end{align*}
+
+\subsection{Stability criterion}
+The stability criterion is given as
+\begin{align*}
+ h >> \epsilon
+\end{align*}
+This scheme is claimed to have second order convergence.
+\subsection{Example}
+Consider the equation along with the given initial conditions and boundary conditions
+\begin{align}
+ \begin{split}
+  &u_{t}-\epsilon u_{xx} + 2u_{x} + u = f(x,t)\\
+  &f(x,t) = e^{2(x-1)/\epsilon}(2\cos(2t)+\sin(2t))+e^{(x-1)}(cos(t)-\epsilon \sin(t)+3\sin(t))
+ \end{split} 
+\end{align}
+The analytical solution is given by
+\begin{align}
+ u(x,t) = e^{2(x-1)/\epsilon}sin(2t) + e^{(x-1)}sin(t)
+\end{align}
+
+The following plots and error estimates have been obtained on solving the above example using the tailored finite point method.\\
+
+\begin{tabular}{|c|c|c|c|c|c|}
+   \hline
+   (h, $\tau$)  & (1/16,$2*10^{-5}$)  & (1/32,$2*10^{-5}$) & (1/64,$2*10^{-5}$) &(1/256,$2*10^{-5}$)\\
+  \hline
+  Error  & 0.00253  & 0.00064 & 0.00015 & 0.00003\\
+  \hline
+  Order & -  &  1.97  & 2.013 & 2.09\\
+\hline
+\end{tabular}
+
+\clearpage
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[height=8cm]{Figures/explicit5_2.eps}\\
+		\rule{35em}{0.5pt}
+	\caption[Parablic]{}
+\end{figure}
+
+\clearpage
+
+\section{TFPM in two dimensions}
+
+\subsection{Convection-Diffusion-Reaction Problem}
+
+\begin{align}
+\mathbb{L}u & \equiv  -\epsilon^{2} \Delta u + p(\textbf{x})u_{x} + q(\textbf{x})u_{y} + b(\textbf{x})u = f(x), \forall \textbf{x} = (x,y) \in \Omega\\
+u \large{|}_{\partial{\Omega}} & = 0
+\end{align}
+
+For the sake of simplicity, we assume that $\Omega = [0,1] x [0,1]$ and we have a uniform mesh, i.e
+$h = N^{-1}$ be the mesh size and 
+\begin{align}
+ x_{i} = ih, y_{j} = jh, 0 \leq i , j \leq N
+\end{align}
+
+\includegraphics[width =8cm,height = 5cm]{Figures/cell_1.eps}
+
+Then $\{ P_{i,j} = (x_i , y_j ), \hspace{0.3cm} 0 \leq i, j \leq N \}$ are the mesh points.
+We now construct our tailored finite point scheme for (1.3) on the cell $\Omega_{0}$. We approximate the 
+model problem (1.3) on the cell $\Omega_{0}$ by
+
+\begin{align}
+ -\epsilon^{2}+p_{0}(x) + q_{0}u_(y) + b_{0} = f_{0}
+\end{align}
+with $p_{0} = p(\textbf{x}^{0}),\hspace{1mm} q_{0} = q(\textbf{x}^{0}),\hspace{1mm} b_{0} = b(\textbf{x}^{0}),\hspace{1mm} f_{0} = f(\textbf{x}^{0})$\\
+
+We consider the case $ b_{0}>0$
+
+Let
+\begin{align}
+ u(x,y) = \frac{f_{0}}{b_{0}} + v(x,y)\text{exp} \Bigg{(}\frac{p_{0}x + q_{0}y}{2 \epsilon^2}\Bigg{)}
+\end{align}
+Then v satisfies,
+
+\begin{align}
+ -\epsilon^{2} \Delta{v} + d^{2}_{0} = 0
+\end{align}
+
+with $d^{2}_{0} = b_{0} + \frac{p_{0}^{2}+q_{0}^{2}}{4 \epsilon^2} $\\
+Let $\mu_{0} = d_{0}/\epsilon$, and
+
+\begin{align*}
+ H_{4} = \bigg{\{} v(x,y)|\hspace{2mm}v =  c_{1}e^{-\mu_{0}x} + c_{2}e^{\mu_{0}x} + c_{3}e^{-\mu_{0}y} + c_{4}e^{-\mu_{0}y},\hspace{3mm} \forall c_{i} \in \mathbb{R} \bigg{\}}
+\end{align*}
+Then we take the scheme as
+
+\begin{align}
+ \alpha_{1}V_{1} + \alpha_{2}V_{2} + \alpha_{3}V_{3} + \alpha_{4}V_{4} + \alpha_{0}V_{0} = 0
+\end{align}
+with $V_{j} = v(\textbf{x}^{j})$, such that (1.9) holds for all $v \in H_{4}$. Thus we obtain
+\begin{align}
+ \alpha_{1}e^{-\mu_{0}h} + \alpha_{2} + \alpha_{3}e^{\mu_{0}h} + \alpha_{4}+\alpha_{0} &= 0\\
+ \alpha_{1}e^{\mu_{0}h} + \alpha_{2} + \alpha_{3}e^{-\mu_{0}h} + \alpha_{4}+\alpha_{0}&= 0\\
+ \alpha_{1} + \alpha_{2}e^{-\mu_{0}h} + \alpha_{3} + \alpha_{4}e^{\mu_{0}h}+\alpha_{0}&= 0\\
+ \alpha_{1} + \alpha_{2}e^{\mu_{0}h} + \alpha_{3} + \alpha_{4}e^{-\mu_{0}h}+\alpha_{0} &= 0
+\end{align}
+For any given $\alpha_{0} \in \mathbb{R}$ the system (1.10) to (1.13) has the unique solution
+
+\begin{align}
+ \alpha_{1} = \alpha_{2} = \alpha_{3} = \alpha_{4} = \frac{-\alpha_{0} }{e^{\mu_{0}h}+e^{-\mu_{0}h}+2} \equiv \frac{-\alpha_{0}}{4\cosh^2\bigg{(}\frac{\mu_{0}h}{2}\bigg{)}}     
+\end{align}
+
+If we take
+
+\begin{align}
+ \alpha_{0} = \frac{e^{\mu_{0}h}+e^{-\mu_{0}h}+2}{e^{\mu_{0}h}+e^{-\mu_{0}h}-2} \equiv \frac{\cosh^2\bigg{(}\frac{\mu_{0}h}{2}\bigg{)}}{\sinh^2\bigg{(}\frac{\mu_{0}h}{2}\bigg{)}}
+\end{align}
+
+we get
+
+\begin{align}
+ \alpha_{1} = \alpha_{2}=\alpha_{3} = \alpha_{4} = -\frac{1}{e^{\mu_{0}h}+e^{-\mu_{0}h}+2} \equiv - \frac{1}{4 sinh^{2}\bigg{(}\frac{\mu_{0}h}{2}\bigg{)}}
+\end{align}
+
+We finally have the following five point scheme
+\begin{align}
+ \begin{split}
+  U_{0} -& \frac{e^{-\frac{p_{0}h}{2\epsilon^2}}U_{1}+e^{-\frac{q_{0}h}{2\epsilon^2}}U_{2}+e^{\frac{p_{0}h}{2\epsilon^2}}U_{3}+e^{\frac{q_{0}h}{2\epsilon^2}}U_{4}}
+  {4cosh^2\bigg{(}\frac{\mu_{0}h}{2}\bigg{)}}\\
+  =& \frac{f_{0}}{b_{0}}\Bigg{(}1-\frac{e^{-\frac{p_{0}h}{2\epsilon^2}}+e^{-\frac{q_{0}h}{2\epsilon^2}}+e^{\frac{p_{0}h}{2\epsilon^2}}+e^{\frac{q_{0}h}{2\epsilon^2}}}
+  {4cosh^2\bigg{(}\frac{\mu_{0}h}{2}\bigg{)}}\Bigg{)}
+ \end{split}
+\end{align}
+with
+\begin{align}
+U_{j} = u(\textbf{x}^{j}) = \frac{f_{0}}{b_{0}} + V_{j}\text{exp}\Bigg{(} \frac{p_{0}x + q_{0}y}{2 \epsilon ^2} \Bigg{)}
+\end{align}
+
+\subsection{Example}
+Consider the following convection-diffusiion-reaction problem slong with the given conditions
+\begin{align}
+ -\epsilon^{2}\Delta u &+ p(\textbf{x})u_{x} + q(\textbf{x})+u_{y}+b(\textbf{x})u = f(\textbf{x}),\hspace{0.5cm} \forall x = (x,y) \in \Omega\\
+ u|_{\partial{\Omega}} &= 0
+\end{align}
+where
+\begin{align*}
+ \Omega &= [0,1]^2, p(\textbf{x}) = 1, q(\textbf{x}=0), b(\textbf{x}) = 1,\\
+ f(x,y) &= [2\epsilon^2 + y(1-y)]\bigg{[}e^{\frac{x-1}{\epsilon^2}} + (x-1)e^{-\frac{1}{\epsilon^2}-x} + y(1-y)\big{(}e^{-\frac{1}{\epsilon^2}}-1\big{)}\bigg{]}
+\end{align*}
+The exact solution of the problem is given by
+\begin{align*}
+ u(x,y) = y(1-y)\bigg{[}e^{\frac{x-1}{\epsilon^2}} + (x-1)e^{-\frac{1}{\epsilon^2}} -x \bigg{]} 
+\end{align*}
+
+The following plots and error estimates have been obtained on solving the above example using the 
+tailored finite point method for $\epsilon=0.1$.\\
+
+\includegraphics[height=8cm]{Figures/CDR_approx_2.eps}\\
+\includegraphics[height=8cm]{Figures/CDR_exact_1.eps}\\
+
+\begin{tabular}{|c|c|c|c|c|c|}
+   \hline
+  & mesh size h  & 1/16  & 1/32 & 1/64 &  1/128\\
+  \hline
+ $\epsilon = 0.1$ & Error  & 0.0082  & 0.0032 & 9.4071e-04 &  2.2276e-04\\
+ \hline
+   &Order & -  &  1.3576  & 1.7662 & 2.0783\\
+\hline
+  $\epsilon = 0.05$ & Error  & 0.0061  & 0.0038 & 0.0021 &  8.400e-04\\
+ \hline
+   &Order & -  &  0.6828 & 0.8556 & 1.32\\
+\hline
+  $\epsilon = 0.01$ & Error  & 0.0048  & 0.0025 & 0.0013 &  6.7100e-04\\
+ \hline
+   &Order & -  &  0.9411  & 0.9434 & 0.9541\\
+\hline
+\end{tabular}
+
